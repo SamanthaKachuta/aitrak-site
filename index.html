@@ -1,241 +1,218 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AITRAK Technologies - African Intelligence Engineered for Impact</title>
-    
+    <title>Your Company - Innovative Tech Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* Applying the Inter font to the entire body */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0A0A0A; /* A deep, near-black for the background */
-            color: #E2E8F0; /* A soft white (slate-200) for body text for better readability */
+        /* Custom CSS for gradient borders on hover and pulsing glow */
+        .service-card {
+            /* Initial state */
+            transform: translateX(-100%) rotate(-15deg); /* Starts off-screen left, rotated */
+            opacity: 0;
+            transition: transform 1s ease-out, opacity 1s ease-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            position: absolute; /* Essential for diagonal placement */
+            z-index: 10; /* Ensure overlap looks good */
+            will-change: transform, opacity, box-shadow; /* Optimize animations */
         }
 
-        /* Subtle gradient effect for the hero section background */
-        .hero-gradient {
-            background-color: #0A0A0A;
-            /* background-image: radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 40%);  Removed for animation */
-            position: relative; /* Needed for absolute positioning of background elements */
-            overflow: hidden; /* Ensures background elements don't spill out */
+        .service-card.service-card-hidden {
+             /* Explicitly define hidden state if needed */
+            transform: translateX(-100%) rotate(-15deg);
+            opacity: 0;
         }
 
-        /* New: Abstract background animation for hero */
-        .hero-bg-anim {
+        .service-card.service-card-visible {
+            transform: translateX(0) rotate(0deg); /* Fly to original position */
+            opacity: 1;
+        }
+
+        /* Hover effect for glow (custom property for gradient border) */
+        .service-card:hover {
+            transform: scale(1.03) rotate(0deg); /* Slight scale up on hover */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.7); /* Larger shadow + subtle blue glow */
+            z-index: 20; /* Bring hovered card to front */
+        }
+
+        /* Gradient Border - Requires custom CSS, Tailwind doesn't do this natively for borders */
+        /* We can use pseudo-elements or a trick with background-clip */
+        .service-card-border-glow {
+            position: relative;
+            border-radius: 0.75rem; /* Matches Tailwind's rounded-xl */
+            overflow: hidden; /* Important to clip the pseudo-element glow */
+            padding: 2px; /* This creates the visible border */
+            background-color: #1a202c; /* Background of the card itself */
+        }
+
+        .service-card-border-glow::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1; /* Very subtle */
-            background: radial-gradient(circle at 70% 20%, rgba(37, 99, 235, 0.15), transparent 60%),
-                        radial-gradient(circle at 30% 80%, rgba(147, 51, 234, 0.1), transparent 70%); /* Blue and purple subtle gradients */
-            animation: subtlePulse 10s infinite alternate ease-in-out; /* Smooth, slow animation */
-            pointer-events: none; /* Allows clicks through */
+            right: 0;
+            bottom: 0;
+            border-radius: 0.75rem;
+            padding: 2px; /* Needs to match parent's padding if using for border */
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899); /* Blue, Purple, Pink gradient */
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1; /* Place behind card content */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out;
         }
 
-        @keyframes subtlePulse {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.1; }
-            50% { transform: scale(1.05) translate(5px, 5px); opacity: 0.15; }
-            100% { transform: scale(1) translate(0, 0); opacity: 0.1; }
+        .service-card-border-glow:hover::before {
+            opacity: 1; /* Show gradient border on hover */
+            /* You could also add animation here for a pulsating glow */
+            animation: pulse-gradient 1.5s infinite alternate; /* Optional pulse */
         }
 
-        /* Styling for the service cards */
-        .service-card {
-            background-color: rgba(255, 255, 255, 0.03); /* A very subtle glass-morphism effect */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease; /* Add border-color transition */
-            position: relative; /* For potential pseudo-elements or inner glows */
+        @keyframes pulse-gradient {
+            0% {
+                filter: brightness(1);
+            }
+            100% {
+                filter: brightness(1.2);
+            }
         }
-
-        .service-card:hover {
-            background-color: rgba(255, 255, 255, 0.07);
-            transform: translateY(-4px);
-            border-color: rgba(37, 99, 235, 0.5); /* Blue glow on hover */
+        
+        /* Specific diagonal placements for larger screens */
+        @media (min-width: 1024px) { /* Adjust breakpoint as needed */
+            .service-card-1 { top: 0px; left: 10%; transform: translateX(-100%) rotate(-15deg); }
+            .service-card-2 { top: 150px; left: 30%; transform: translateX(-100%) rotate(-10deg); }
+            .service-card-3 { top: 300px; left: 50%; transform: translateX(-100%) rotate(-5deg); }
+            .service-card-4 { top: 450px; left: 70%; transform: translateX(-100%) rotate(0deg); }
+            .service-card-5 { top: 600px; left: 20%; transform: translateX(-100%) rotate(-12deg); } /* More custom placement */
+            .service-card-6 { top: 750px; left: 40%; transform: translateX(-100%) rotate(-8deg); } /* More custom placement */
         }
-
-        /* Optional: Small inner glow effect on hover for service cards */
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            border-radius: inherit; /* Inherit border-radius from parent */
-            background: radial-gradient(circle at center, rgba(37, 99, 235, 0.2), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
+        
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 1023px) {
+            .service-card {
+                position: relative; /* Revert to relative for stacking */
+                width: 90%; /* Adjust width for mobile */
+                margin: 2rem auto; /* Center and add vertical space */
+                transform: translateX(0) rotate(0deg); /* No initial transform needed, will just fade in */
+                opacity: 0; /* Start hidden */
+            }
+            .service-card.service-card-visible {
+                opacity: 1; /* Fade in */
+                transform: translateX(0) rotate(0deg);
+            }
+            .service-card:hover {
+                transform: scale(1.03); /* Simple scale on hover for mobile */
+            }
+            .service-card-border-glow {
+                 padding: 0; /* Remove padding if not using border trick on small screens */
+            }
+             .service-card-border-glow::before {
+                content: none; /* Hide pseudo-element on smaller screens */
+            }
         }
-
-        .service-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Fade in effect for sections (scroll-triggered) */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in-up-active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-900 text-white font-sans antialiased">
 
-    <header class="hero-gradient py-24 sm:py-32">
-        <div class="hero-bg-anim"></div> <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
-                AITRAK Technologies
-            </h1>
-            <p class="mt-6 text-lg md:text-xl text-slate-300">
-                African Intelligence Engineered for Impact
-            </p>
-            <div class="mt-10">
-                <a href="#services" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-blue-500 transition-colors duration-300">
-                    Explore Our Services
-                </a>
-            </div>
-        </div>
-    </header>
+    <div class="hero-bg-anim fixed inset-0 z-0 opacity-20" style="background: linear-gradient(45deg, #1f2937, #374151);"></div>
 
-    <main class="max-w-7xl mx-auto px-6">
-
-        <section id="services" class="py-20 sm:py-24 fade-in-up">
-            <div class="max-w-4xl mx-auto text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">What We Do</h2>
-                <p class="mt-4 text-lg text-slate-300">
-                    We pioneer smart digital infrastructure through artificial intelligence, geospatial data solutions, and scalable software systems.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.44 1.353l-3.374 4.499a2.25 2.25 0 00-.44 1.353v3.862c0 .265.105.52.293.707.187.188.442.293.707.293H15c.265 0 .52-.105.707-.293.188-.187.293-.442.293-.707v-3.862a2.25 2.25 0 00-.44-1.353l-3.374-4.499a2.25 2.25 0 01-.44-1.353V3.104a.75.75 0 00-.75-.75h-3c-.414 0-.75.336-.75.75z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-white">AI & Machine Learning</h3>
-                    <p class="mt-2 text-slate-400">Developing intelligent systems and predictive models to solve complex challenges.</p>
-                </div>
+    <main class="relative z-10">
+        <section id="services" class="py-20 sm:py-24 relative overflow-hidden min-h-[1000px] lg:min-h-[1200px]">
+            <div class="max-w-7xl mx-auto px-6 relative">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight text-center mb-16 lg:mb-24">Our Core Offerings</h2>
                 
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
+                <div class="lg:absolute lg:inset-0 w-full">
+                    
+                    <div class="service-card service-card-1 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:mr-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/11" alt="AI & Machine Learning" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">AI & Machine Learning</h3>
+                            <p class="text-slate-400 text-sm">Developing intelligent systems and predictive models to solve complex challenges.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Explore AI</a>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold text-white">Software & Web Development</h3>
-                    <p class="mt-2 text-slate-400">Building robust, scalable, and user-centric digital platforms and applications.</p>
-                </div>
 
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                            <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
-                            <path d="M17.25 14.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zM6.75 14.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
-                        </svg>
+                    <div class="service-card service-card-2 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:ml-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/8" alt="Software & Web Development" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Software & Web Development</h3>
+                            <p class="text-slate-400 text-sm">Building robust, scalable, and user-centric digital platforms and applications.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">View Projects</a>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold text-white">Geospatial & Data Analytics</h3>
-                    <p class="mt-2 text-slate-400">Transforming location-based data into actionable insights and strategic advantages.</p>
-                </div>
-                
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 7.5V4.75A2.75 2.75 0 017.75 2h8.5A2.75 2.75 0 0119 4.75v2.75m-15 0h14a2 2 0 012 2v0a2 2 0 01-2 2h-14a2 2 0 01-2-2v0a2 2 0 012-2zm0 0h14a2 2 0 012 2v0a2 2 0 01-2 2h-14a2 2 0 01-2-2v0a2 2 0 012-2zM4 14.5h16M4 14.5v2.75A2.75 2.75 0 006.75 20h8.5A2.75 2.75 0 0019 17.25v-2.75" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-white">ICT Hardware & Support</h3>
-                    <p class="mt-2 text-slate-400">Providing reliable infrastructure, hardware procurement, and expert support services.</p>
-                </div>
 
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 10.5a.75.75 0 110-1.5.75.75 0 010 1.5zM12 14.25a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                        </svg>
+                    <div class="service-card service-card-3 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:mr-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/9" alt="Geospatial & Data Analytics" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Geospatial & Data Analytics</h3>
+                            <p class="text-slate-400 text-sm">Transforming location-based data into actionable insights and strategic advantages.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Discover Insights</a>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold text-white">AI & Tech Consultancy</h3>
-                    <p class="mt-2 text-slate-400">Offering strategic guidance to help you navigate the ever-evolving tech landscape.</p>
-                </div>
 
-                <div class="service-card p-8 rounded-xl">
-                    <div class="mb-4 text-blue-400">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12m0 0l2.25 2.25M16.5 12L14.25 14.25M16.5 12H10.5m0-6.75L9.278 4.67A4.5 4.5 0 006.108 3h-1.334C3.02 3 2 4.02 2 5.334v13.332C2 19.98 3.02 21 4.334 21h13.332C18.98 21 20 19.98 20 18.666V13.5m-1.5-3v-3A2.25 2.25 0 0016.25 6h-6.5A2.25 2.25 0 007.5 8.25v6.5A2.25 2.25 0 009.75 17.5h6.5A2.25 2.25 0 0018.5 15.25v-3z" />
-                        </svg>
+                    <div class="service-card service-card-4 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:ml-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/7" alt="ICT Hardware & Support" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">ICT Hardware & Support</h3>
+                            <p class="text-slate-400 text-sm">Providing reliable infrastructure, hardware procurement, and expert support services.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Get Support</a>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold text-white">Custom AI Solutions</h3>
-                    <p class="mt-2 text-slate-400">Tailoring advanced AI and tech solutions to meet your unique business needs.</p>
-                </div>
+                    
+                    <div class="service-card service-card-5 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:mr-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/10" alt="AI & Tech Consultancy" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">AI & Tech Consultancy</h3>
+                            <p class="text-slate-400 text-sm">Offering strategic guidance to help you navigate the ever-evolving tech landscape.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Strategic Guidance</a>
+                        </div>
+                    </div>
 
+                    <div class="service-card service-card-6 w-full max-w-sm rounded-xl shadow-lg bg-[#1a202c] overflow-hidden lg:ml-auto service-card-border-glow">
+                        <img src="http://googleusercontent.com/image_generation_content/12" alt="Custom AI Solutions" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Custom AI Solutions</h3>
+                            <p class="text-slate-400 text-sm">Tailoring advanced AI and tech solutions to meet your unique business needs.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Bespoke Solutions</a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </section>
-
-        <section id="mission" class="py-20 sm:py-24 border-t border-slate-800 fade-in-up">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Our Mission</h2>
-                <p class="mt-6 text-lg md:text-xl text-slate-300 leading-8">
-                    To build intelligent systems that empower businesses, governments, and everyday people through smart, localized, and ethical technology built for African realities.
-                </p>
-            </div>
-        </section>
-
     </main>
-
-    <footer id="contact" class="bg-[#101010] border-t border-slate-800 mt-20 py-16">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Connect With Us</h2>
-            
-            <div class="space-y-4">
-                <a href="mailto:airtraktechnologies@gmail.com" class="text-lg text-blue-400 hover:text-blue-300 transition-colors duration-300 flex items-center justify-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    airtraktechnologies@gmail.com
-                </a>
-                <p class="text-slate-400 flex items-center justify-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657m0 0a2 2 0 102.828 2.828m-2.828-2.828L9.586 11.09a2 2 0 012.828 0L17.657 16.657m0 0a2 2 0 102.828 2.828m-2.828-2.828A2 2 0 0020 14.25V5.75A2.75 2.75 0 0017.25 3h-10.5A2.75 2.75 0 004 5.75v8.5a2.75 2.75 0 002.75 2.75h10.5z" />
-                    </svg>
-                    James Court, 110 H Chitepo St/9th Ave, Bulawayo, Zimbabwe
-                </p>
-            </div>
-            
-            <div class="mt-16 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
-                <p>&copy; 2025 AITRAK Technologies (Pvt) Ltd. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const observer = new IntersectionObserver((entries) => {
+            const serviceCards = document.querySelectorAll('.service-card');
+
+            const observerOptions = {
+                root: null, // viewport as the root
+                rootMargin: '0px',
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            };
+
+            const observerCallback = (entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in-up-active');
-                        observer.unobserve(entry.target); // Stop observing once animated
+                        entry.target.classList.add('service-card-visible');
+                        entry.target.classList.remove('service-card-hidden'); // Ensure hidden is removed
+                        // If you want the animation to play only once, uncomment the line below:
+                        // observer.unobserve(entry.target);
+                    } else {
+                        // Optional: Reset for re-animation if scrolled out
+                        // entry.target.classList.remove('service-card-visible');
+                        // entry.target.classList.add('service-card-hidden');
                     }
                 });
-            }, { threshold: 0.1 }); // Trigger when 10% of element is visible
+            };
 
-            document.querySelectorAll('.fade-in-up').forEach(element => {
-                observer.observe(element);
+            const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+            serviceCards.forEach(card => {
+                observer.observe(card);
             });
         });
     </script>
