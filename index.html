@@ -1,84 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AITRAK Technologies</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #000000;
-    }
-    header {
-      background-color: #000000;
-      color: white;
-      padding: 40px 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 3em;
-    }
-    header p {
-      font-size: 1.2em;
-      margin-top: 10px;
-    }
-    section {
-      padding: 60px 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .btn {
-      background-color: #000000;
-      color: white;
-      padding: 15px 25px;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 20px;
-      border-radius: 4px;
-    }
-    footer {
-      background-color: #f0f0f0;
-      text-align: center;
-      padding: 30px 20px;
-      font-size: 0.9em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AITRAK Technologies - African Intelligence Engineered for Impact</title>
+    
+    <!-- Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for a clean, modern typeface -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Applying the Inter font to the entire body */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0A0A; /* A deep, near-black for the background */
+            color: #E2E8F0; /* A soft white (slate-200) for body text for better readability */
+        }
+
+        /* Subtle gradient effect for the hero section background */
+        .hero-gradient {
+            background-color: #0A0A0A;
+            background-image: radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 40%);
+        }
+
+        /* Styling for the service cards */
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.03); /* A very subtle glass-morphism effect */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+            transform: translateY(-4px);
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <h1>AITRAK Technologies</h1>
-    <p>African Intelligence Engineered for Impact</p>
-  </header>
+<body class="antialiased">
 
-  <section>
-    <h2>What We Do</h2>
-    <p>AITRAK is a Zimbabwean company pioneering smart digital infrastructure through artificial intelligence, geospatial data solutions, and scalable software systems.</p>
-    <ul>
-      <li>AI & Machine Learning Solutions</li>
-      <li>Software & Web Development</li>
-      <li>Geospatial & Data Analytics</li>
-      <li>ICT Hardware & Support Services</li>
-      <li>Custom Tech Consulting</li>
-    </ul>
-    <a href="#contact" class="btn">Contact Us</a>
-  </section>
+    <!-- HERO SECTION -->
+    <header class="hero-gradient py-24 sm:py-32">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <!-- Main Headline -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
+                AITRAK Technologies
+            </h1>
+            <!-- Sub-headline -->
+            <p class="mt-6 text-lg md:text-xl text-slate-300">
+                African Intelligence Engineered for Impact
+            </p>
+            <!-- Call to Action Button -->
+            <div class="mt-10">
+                <a href="#services" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-blue-500 transition-colors duration-300">
+                    Explore Our Services
+                </a>
+            </div>
+        </div>
+    </header>
 
-  <section>
-    <h2>Our Mission</h2>
-    <p>To build intelligent systems that empower businesses, governments, and everyday people through smart, localized, and ethical technology built for African realities.</p>
-  </section>
+    <main class="max-w-7xl mx-auto px-6">
 
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <p>Email: <a href="mailto:airtraktechnologies@gmail.com">airtraktechnologies@gmail.com</a></p>
-    <p>Address: No. 2 Bentley Road, Khumalo, Bulawayo, Zimbabwe</p>
-  </section>
+        <!-- SERVICES SECTION -->
+        <section id="services" class="py-20 sm:py-24">
+            <div class="max-w-4xl mx-auto text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">What We Do</h2>
+                <p class="mt-4 text-lg text-slate-300">
+                    We pioneer smart digital infrastructure through artificial intelligence, geospatial data solutions, and scalable software systems.
+                </p>
+            </div>
+            
+            <!-- Grid layout for services -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="service-card p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white">AI & Machine Learning</h3>
+                    <p class="mt-2 text-slate-400">Developing intelligent systems and predictive models to solve complex challenges.</p>
+                </div>
+                
+                <!-- Service Card 2 -->
+                <div class="service-card p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white">Software & Web Development</h3>
+                    <p class="mt-2 text-slate-400">Building robust, scalable, and user-centric digital platforms and applications.</p>
+                </div>
 
-  <footer>
-    &copy; 2025 AITRAK Technologies (Pvt) Ltd. All rights reserved.
-  </footer>
+                <!-- Service Card 3 -->
+                <div class="service-card p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white">Geospatial & Data Analytics</h3>
+                    <p class="mt-2 text-slate-400">Transforming location-based data into actionable insights and strategic advantages.</p>
+                </div>
+                
+                <!-- Service Card 4 -->
+                <div class="service-card p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white">ICT Hardware & Support</h3>
+                    <p class="mt-2 text-slate-400">Providing reliable infrastructure, hardware procurement, and expert support services.</p>
+                </div>
+
+                <!-- Service Card 5 -->
+                <div class="service-card p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white">AI & Tech Consultancy</h3>
+                    <p class="mt-2 text-slate-400">Offering strategic guidance to help you navigate the ever-evolving tech landscape.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSION SECTION -->
+        <section id="mission" class="py-20 sm:py-24 border-t border-slate-800">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Our Mission</h2>
+                <p class="mt-6 text-lg md:text-xl text-slate-300 leading-8">
+                    To build intelligent systems that empower businesses, governments, and everyday people through smart, localized, and ethical technology built for African realities.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer id="contact" class="bg-[#101010] border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-16">
+            <div class="text-center">
+                 <h2 class="text-2xl sm:text-3xl font-bold text-white">Contact Us</h2>
+                 <p class="mt-4 text-slate-300">Ready to start a project or have a question? Get in touch.</p>
+                 <div class="mt-8">
+                    <a href="mailto:airtraktechnologies@gmail.com" class="text-lg text-blue-400 hover:text-blue-300 transition-colors duration-300">
+                        airtraktechnologies@gmail.com
+                    </a>
+                    <p class="mt-4 text-slate-400">No. 2 Bentley Road, Khumalo, Bulawayo, Zimbabwe</p>
+                 </div>
+            </div>
+            <div class="mt-16 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
+                <p>&copy; 2025 AITRAK Technologies (Pvt) Ltd. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
