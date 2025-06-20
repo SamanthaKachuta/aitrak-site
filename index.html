@@ -48,25 +48,25 @@
             100% { transform: scale(1) translate(0, 0); opacity: 0.1; }
         }
 
-        /* --- SERVICE CARD STYLES --- */
+        /* --- SERVICE CARD STYLES (Adjusted for Grid Layout) --- */
         .service-card {
             background-color: rgba(255, 255, 255, 0.03); /* Subtle glass-morphism */
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateX(-100%) rotate(-15deg); /* Initial state: off-screen left, rotated */
+            transform: translateY(20px); /* Initial state: slightly below, will fade in */
             opacity: 0;
-            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1s ease-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
-            position: absolute; /* Essential for diagonal placement on large screens */
-            z-index: 10; /* Ensure overlap looks good */
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            position: relative; /* No longer absolute for diagonal layout */
+            z-index: 10;
             will-change: transform, opacity, box-shadow; /* Optimize animations */
         }
 
         .service-card.service-card-visible {
-            transform: translateX(0) rotate(0deg); /* Fly to original position */
+            transform: translateY(0); /* Fly to original position */
             opacity: 1;
         }
 
         .service-card:hover {
-            transform: scale(1.03) rotate(0deg); /* Slight scale up on hover */
+            transform: translateY(0) scale(1.03); /* Slight scale up on hover */
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.7); /* Larger shadow + subtle blue glow */
             z-index: 20; /* Bring hovered card to front */
         }
@@ -109,32 +109,23 @@
             100% { filter: brightness(1.2); }
         }
         
-        /* Specific diagonal placements for larger screens (LG breakpoint) */
-        @media (min-width: 1024px) {
-            .services-container-wrapper {
-                position: relative; /* Container for absolute cards */
-                min-height: 1200px; /* Adjust height based on how far down cards go */
+        /* Specific responsive adjustments for the new grid layout */
+        @media (min-width: 1024px) { /* On large screens, cards will be in a 3-column grid */
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr); /* Three columns */
+                gap: 2rem; /* Spacing between cards */
             }
-
-            .service-card-1 { top: 0px; left: 10%; }
-            .service-card-2 { top: 150px; left: 30%; }
-            .service-card-3 { top: 300px; left: 50%; }
-            .service-card-4 { top: 450px; left: 70%; }
-            .service-card-5 { top: 600px; left: 20%; } /* More custom placement */
-            .service-card-6 { top: 750px; left: 40%; } /* More custom placement */
+            .service-card {
+                margin: 0; /* Remove auto margins for grid items */
+                width: auto; /* Allow grid to manage width */
+            }
         }
         
-        /* Responsive adjustments for smaller screens (Below LG breakpoint) */
-        @media (max-width: 1023px) {
+        @media (max-width: 1023px) { /* On smaller screens, cards will stack vertically */
             .service-card {
-                position: relative; /* Revert to relative for stacking */
                 width: 90%; /* Adjust width for mobile */
                 margin: 2rem auto; /* Center and add vertical space */
-                transform: translateX(0) rotate(0deg); /* No initial transform needed, will just fade in */
-                opacity: 0; /* Start hidden */
-            }
-            .service-card.service-card-visible {
-                opacity: 1; /* Fade in */
             }
             .service-card-border-glow {
                  padding: 0; /* Remove padding if not using border trick on small screens */
@@ -185,63 +176,36 @@
                 </p>
             </div>
             
-            <div class="services-container-wrapper w-full mx-auto">
+            <div class="services-grid w-full mx-auto"> 
                 
-                <div class="service-card service-card-1 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/ai.png" alt="AI & Machine Learning" class="w-full h-48 object-cover rounded-t-xl">
+                <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
+                    <img src="images/ai.png" alt="AI & Advanced Analytics" class="w-full h-48 object-cover rounded-t-xl">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">AI & Machine Learning</h3>
-                        <p class="text-slate-400 text-sm">Developing intelligent systems and predictive models to solve complex challenges.</p>
-                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Explore AI</a>
+                        <h3 class="text-xl font-semibold text-white mb-2">AI, ML & Advanced Analytics</h3>
+                        <p class="text-slate-400 text-sm">Unlocking insights and building intelligent systems through machine learning, geospatial analysis, and strategic AI consulting.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Explore Solutions</a>
                     </div>
                 </div>
 
-                <div class="service-card service-card-2 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/software.png" alt="Software & Web Development" class="w-full h-48 object-cover rounded-t-xl">
+                <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
+                    <img src="images/software.png" alt="Software & Digital Platforms" class="w-full h-48 object-cover rounded-t-xl">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">Software & Web Development</h3>
-                        <p class="text-slate-400 text-sm">Building robust, scalable, and user-centric digital platforms and applications.</p>
-                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">View Projects</a>
+                        <h3 class="text-xl font-semibold text-white mb-2">Software & Digital Platforms</h3>
+                        <p class="text-slate-400 text-sm">Crafting robust, scalable web and mobile applications, including bespoke AI-powered software tailored to your needs.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">View Platforms</a>
                     </div>
                 </div>
 
-                <div class="service-card service-card-3 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/geo.png" alt="Geospatial & Data Analytics" class="w-full h-48 object-cover rounded-t-xl">
+                <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
+                    <img src="images/ict.png" alt="ICT Infrastructure & Strategic Consulting" class="w-full h-48 object-cover rounded-t-xl">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">Geospatial & Data Analytics</h3>
-                        <p class="text-slate-400 text-sm">Transforming location-based data into actionable insights and strategic advantages.</p>
-                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Discover Insights</a>
-                    </div>
-                </div>
-
-                <div class="service-card service-card-4 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/ict.png" alt="ICT Hardware & Support" class="w-full h-48 object-cover rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">ICT Hardware & Support</h3>
-                        <p class="text-slate-400 text-sm">Providing reliable infrastructure, hardware procurement, and expert support services.</p>
+                        <h3 class="text-xl font-semibold text-white mb-2">ICT Infrastructure & Strategic Consulting</h3>
+                        <p class="text-slate-400 text-sm">Providing reliable IT infrastructure, hardware solutions, and expert advisory services to optimize your technology landscape.</p>
                         <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Get Support</a>
                     </div>
                 </div>
-                
-                <div class="service-card service-card-5 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/cons.png" alt="AI & Tech Consultancy" class="w-full h-48 object-cover rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">AI & Tech Consultancy</h3>
-                        <p class="text-slate-400 text-sm">Offering strategic guidance to help you navigate the ever-evolving tech landscape.</p>
-                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Strategic Guidance</a>
-                    </div>
-                </div>
 
-                <div class="service-card service-card-6 w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="http://googleusercontent.com/image_generation_content/12" alt="Custom AI Solutions" class="w-full h-48 object-cover rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-2">Custom AI Solutions</h3>
-                        <p class="text-slate-400 text-sm">Tailoring advanced AI and tech solutions to meet your unique business needs.</p>
-                        <a href="#" class="mt-4 inline-block text-blue-400 hover:text-blue-300 text-sm font-medium">Bespoke Solutions</a>
-                    </div>
                 </div>
-
-            </div>
         </section>
 
         <section id="mission" class="py-20 sm:py-24 border-t border-slate-800 fade-in-up">
@@ -296,7 +260,7 @@
                 generalObserver.observe(element);
             });
 
-            // Observer for service cards (diagonal fly-in)
+            // Observer for service cards (fade-in)
             const serviceCards = document.querySelectorAll('.service-card');
             const serviceCardObserverOptions = {
                 root: null, // viewport as the root
@@ -308,15 +272,12 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('service-card-visible');
-                        // No need to remove hidden here, as initial state is defined by default
                         // If you want the animation to play only once, uncomment the line below:
                         // observer.unobserve(entry.target);
                     } else {
                         // Optional: Reset for re-animation if scrolled out of view
                         // This allows the animation to play again if user scrolls away and back
-                         if (window.innerWidth >= 1024) { // Only reset diagonal animation on large screens
-                            entry.target.classList.remove('service-card-visible');
-                         }
+                        // entry.target.classList.remove('service-card-visible'); // Removed for simpler fade-in
                     }
                 });
             };
@@ -328,8 +289,6 @@
             });
 
             // Handle initial state on page load for service cards (if already in view)
-            // This prevents cards already in view from not animating
-            // IntersectionObserver often fires once on load, but this ensures.
             serviceCards.forEach(card => {
                 if (card.getBoundingClientRect().top < window.innerHeight) {
                     card.classList.add('service-card-visible');
