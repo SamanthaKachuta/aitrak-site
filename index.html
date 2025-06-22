@@ -35,7 +35,7 @@
             width: 100%;
             height: 100%;
             z-index: 0; /* Ensures it's behind content */
-            opacity: 0.15; /* Make it subtle */
+            opacity: 0.15; /* Make it subtle - NOTE: TEMPORARILY VISIBLE IN JS FOR DEBUGGING */
             pointer-events: none; /* Allows clicks through to elements below */
         }
 
@@ -237,16 +237,17 @@
     </footer>
 
     <script>
+        // --- EXISTING: Scroll Observation (STILL INSIDE DOMContentLoaded) ---
         document.addEventListener('DOMContentLoaded', () => {
             // Observer for general fade-in-up sections (Mission, Footer)
             const generalObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('fade-in-up-active');
-                        generalObserver.unobserve(entry.target); // Stop observing once animated
+                        generalObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 }); // Trigger when 10% of element is visible
+            }, { threshold: 0.1 });
 
             document.querySelectorAll('.fade-in-up').forEach(element => {
                 generalObserver.observe(element);
@@ -255,20 +256,17 @@
             // Observer for service cards (fade-in)
             const serviceCards = document.querySelectorAll('.service-card');
             const serviceCardObserverOptions = {
-                root: null, // viewport as the root
+                root: null,
                 rootMargin: '0px',
-                threshold: 0.2 // Trigger when 20% of the element is visible
+                threshold: 0.2
             };
 
             const serviceCardObserverCallback = (entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('service-card-visible');
-                        // If you want the animation to play only once, uncomment the line below:
-                        // observer.unobserve(entry.target);
                     } else {
                         // Optional: Reset for re-animation if scrolled out of view
-                        // This allows the animation to play again if user scrolls away and back
                         // entry.target.classList.remove('service-card-visible'); // Removed for simpler fade-in
                     }
                 });
@@ -286,139 +284,139 @@
                     card.classList.add('service-card-visible');
                 }
             });
+        }); // <--- THIS IS THE CLOSING BRACKET AND PARENTHESIS FOR DOMContentLoaded
 
-            // --- NEW: Canvas Particle Animation for Hero Section ---
-            const canvas = document.getElementById('heroCanvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            let animationFrameId;
 
-            // Mouse object for interaction
-            const mouse = {
-                x: undefined,
-                y: undefined,
-                radius: 70 // Radius around mouse cursor for interaction
-            };
+        // --- NEW: Canvas Particle Animation for Hero Section (MOVED OUTSIDE DOMContentLoaded) ---
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId;
 
-            // Set canvas dimensions
-            function setCanvasDimensions() {
-                canvas.width = canvas.offsetWidth; // Use offsetWidth/Height for actual rendered size
-                canvas.height = canvas.offsetHeight;
-            }
+        // Mouse object for interaction
+        const mouse = {
+            x: undefined,
+            y: undefined,
+            radius: 70 // Radius around mouse cursor for interaction
+        };
 
-            // Particle constructor
-            function Particle(x, y, radius, color, velocityX, velocityY) {
-                this.x = x;
-                this.y = y;
-                this.radius = radius;
-                this.color = color;
-                this.velocityX = velocityX;
-                this.velocityY = velocityY;
-            }
+        // Set canvas dimensions
+        function setCanvasDimensions() {
+            canvas.width = canvas.offsetWidth; // Use offsetWidth/Height for actual rendered size
+            canvas.height = canvas.offsetHeight;
+        }
 
-            // Draw method for a particle
-            Particle.prototype.draw = function() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            };
+        // Particle constructor
+        function Particle(x, y, radius, color, velocityX, velocityY) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.velocityX = velocityX;
+            this.velocityY = velocityY;
+        }
 
-            // Update method for a particle (movement and interaction)
-            Particle.prototype.update = function() {
-                this.x += this.velocityX;
-                this.y += this.velocityY;
+        // Draw method for a particle
+        Particle.prototype.draw = function() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        };
 
-                // Wrap particles around the screen (teleport to other side)
-                if (this.x - this.radius < 0) this.x = canvas.width + this.radius;
-                if (this.x + this.radius > canvas.width) this.x = -this.radius;
-                if (this.y - this.radius < 0) this.y = canvas.height + this.radius;
-                if (this.y + this.radius > canvas.height) this.y = -this.radius;
+        // Update method for a particle (movement and interaction)
+        Particle.prototype.update = function() {
+            this.x += this.velocityX;
+            this.y += this.velocityY;
 
-                // Mouse interaction: particles subtly repel from the mouse
-                if (mouse.x !== undefined && mouse.y !== undefined) {
-                    const dx = mouse.x - this.x;
-                    const dy = mouse.y - this.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+            // Wrap particles around the screen (teleport to other side)
+            if (this.x - this.radius < 0) this.x = canvas.width + this.radius;
+            if (this.x + this.radius > canvas.width) this.x = -this.radius;
+            if (this.y - this.radius < 0) this.y = canvas.height + this.radius;
+            if (this.y + this.radius > canvas.height) this.y = -this.radius;
 
-                    if (distance < mouse.radius + this.radius) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        // Calculate a force that increases as particle gets closer to mouse
-                        const force = (mouse.radius + this.radius - distance) / (mouse.radius + this.radius);
-                        const maxForce = 0.5; // Controls how strong the push is
+            // Mouse interaction: particles subtly repel from the mouse
+            if (mouse.x !== undefined && mouse.y !== undefined) {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-                        this.x -= forceDirectionX * force * maxForce;
-                        this.y -= forceDirectionY * force * maxForce;
-                    }
-                }
+                if (distance < mouse.radius + this.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius + this.radius - distance) / (mouse.radius + this.radius);
+                    const maxForce = 0.5; // Controls how strong the push is
 
-                this.draw();
-            };
-
-            // Initialize particles
-            function initParticles() {
-                particles = [];
-                const numParticles = 20; // TEMPORARY: Fewer particles for visibility
-                for (let i = 0; i < numParticles; i++) {
-                    const radius = Math.random() * 5 + 5; // TEMPORARY: Make particles larger (5 to 10 pixels)
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * canvas.height;
-                    // TEMPORARY: Bright, opaque red color for testing visibility
-                    const color = `rgba(255, 0, 0, 1)`; 
-                    const velocityX = (Math.random() - 0.5) * 1; // TEMPORARY: Slightly faster movement
-                    const velocityY = (Math.random() - 0.5) * 1; // 
-                    particles.push(new Particle(x, y, radius, color, velocityX, velocityY));
+                    this.x -= forceDirectionX * force * maxForce;
+                    this.y -= forceDirectionY * force * maxForce;
                 }
             }
+            this.draw();
+        };
 
-            // Animation loop for particles
-            function animateParticles() {
-                animationFrameId = requestAnimationFrame(animateParticles);
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
-
-                // Optional: Draw a subtle background gradient for a "nebula/galaxy" feel
-                // This gradient will pulse slightly due to animationFrame
-                const gradient = ctx.createRadialGradient(
-                    canvas.width / 2, canvas.height / 2, 0,
-                    canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
-                );
-                // TEMPORARY: More visible blue and purple pulse for testing
-                gradient.addColorStop(0, `rgba(37, 99, 235, ${Math.sin(Date.now() * 0.0001) * 0.1 + 0.2})`); // Very visible blue pulse
-                gradient.addColorStop(0.5, `rgba(147, 51, 234, ${Math.sin(Date.now() * 0.0001 + Math.PI) * 0.1 + 0.15})`); // Very visible purple pulse
-                gradient.addColorStop(1, 'rgba(10, 10, 10, 0)'); // Fades to transparent
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Update and draw each particle
-                particles.forEach(particle => {
-                    particle.update();
-                });
+        // Initialize particles (TEMPORARILY BRIGHT AND LARGE FOR DEBUGGING)
+        function initParticles() {
+            particles = [];
+            const numParticles = 20; // Fewer particles but larger
+            for (let i = 0; i < numParticles; i++) {
+                const radius = Math.random() * 5 + 5; // Larger radius (5 to 10 pixels)
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const color = `rgba(255, 0, 0, 1)`; // Bright, opaque red color for testing visibility
+                const velocityX = (Math.random() - 0.5) * 1; // Faster movement
+                const velocityY = (Math.random() - 0.5) * 1;
+                particles.push(new Particle(x, y, radius, color, velocityX, velocityY));
             }
+        }
 
-            // Event listeners for mouse interaction
-            window.addEventListener('mousemove', (event) => {
-                mouse.x = event.clientX;
-                mouse.y = event.clientY;
+        // Animation loop for particles
+        function animateParticles() {
+            animationFrameId = requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
+
+            // Optional: Draw a subtle background gradient for a "nebula/galaxy" feel
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
+            );
+            // More visible blue and purple pulse for debugging
+            gradient.addColorStop(0, `rgba(37, 99, 235, ${Math.sin(Date.now() * 0.0001) * 0.1 + 0.2})`); 
+            gradient.addColorStop(0.5, `rgba(147, 51, 234, ${Math.sin(Date.now() * 0.0001 + Math.PI) * 0.1 + 0.15})`);
+            gradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw each particle
+            particles.forEach(particle => {
+                particle.update();
             });
+        }
 
-            // Reset mouse position when it leaves the canvas (to stop interaction)
-            window.addEventListener('mouseout', () => {
-                mouse.x = undefined;
-                mouse.y = undefined;
-            });
-
-            // Handle resizing of the window
-            window.addEventListener('resize', () => {
-                setCanvasDimensions();
-                initParticles(); // Re-initialize particles for new dimensions
-            });
-
-            // Initial setup calls
-            setCanvasDimensions(); // Set initial canvas size
-            initParticles();      // Create initial particles
-            animateParticles();   // Start the animation loop
+        // Event listeners for mouse interaction (ADJUSTED FOR CANVAS-RELATIVE COORDINATES)
+        window.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect(); // Get the size and position of the canvas
+            mouse.x = event.clientX - rect.left;         // Adjust clientX to be relative to canvas left edge
+            mouse.y = event.clientY - rect.top;          // Adjust clientY to be relative to canvas top edge
         });
+
+        // Reset mouse position when it leaves the canvas (to stop interaction)
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        // Handle resizing of the window
+        window.addEventListener('resize', () => {
+            setCanvasDimensions();
+            initParticles(); // Re-initialize particles for new dimensions
+        });
+
+        // Initial setup calls (these will now run immediately after the DOM is parsed,
+        // since the script is at the end of <body> and outside DOMContentLoaded)
+        setCanvasDimensions(); // Set initial canvas size
+        initParticles();      // Create initial particles
+        animateParticles();   // Start the animation loop
+
     </script>
 </body>
 </html>
