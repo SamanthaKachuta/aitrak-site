@@ -359,15 +359,15 @@
             // Initialize particles
             function initParticles() {
                 particles = [];
-                const numParticles = 80; // Adjust for more/fewer particles (higher = denser)
+                const numParticles = 20; // TEMPORARY: Fewer particles for visibility
                 for (let i = 0; i < numParticles; i++) {
-                    const radius = Math.random() * 1.5 + 0.5; // Particle size (0.5 to 2.0 pixels)
+                    const radius = Math.random() * 5 + 5; // TEMPORARY: Make particles larger (5 to 10 pixels)
                     const x = Math.random() * canvas.width;
                     const y = Math.random() * canvas.height;
-                    // Subtle white/grey particles, varying opacity for depth
-                    const color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`; 
-                    const velocityX = (Math.random() - 0.5) * 0.3; // Very slow horizontal movement
-                    const velocityY = (Math.random() - 0.5) * 0.3; // Very slow vertical movement
+                    // TEMPORARY: Bright, opaque red color for testing visibility
+                    const color = `rgba(255, 0, 0, 1)`; 
+                    const velocityX = (Math.random() - 0.5) * 1; // TEMPORARY: Slightly faster movement
+                    const velocityY = (Math.random() - 0.5) * 1; // 
                     particles.push(new Particle(x, y, radius, color, velocityX, velocityY));
                 }
             }
@@ -383,9 +383,9 @@
                     canvas.width / 2, canvas.height / 2, 0,
                     canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
                 );
-                // Subtle blue and purple hues
-                gradient.addColorStop(0, `rgba(37, 99, 235, ${Math.sin(Date.now() * 0.0001) * 0.01 + 0.02})`); // Very subtle blue pulse
-                gradient.addColorStop(0.5, `rgba(147, 51, 234, ${Math.sin(Date.now() * 0.0001 + Math.PI) * 0.01 + 0.01})`); // Very subtle purple pulse
+                // TEMPORARY: More visible blue and purple pulse for testing
+                gradient.addColorStop(0, `rgba(37, 99, 235, ${Math.sin(Date.now() * 0.0001) * 0.1 + 0.2})`); // Very visible blue pulse
+                gradient.addColorStop(0.5, `rgba(147, 51, 234, ${Math.sin(Date.now() * 0.0001 + Math.PI) * 0.1 + 0.15})`); // Very visible purple pulse
                 gradient.addColorStop(1, 'rgba(10, 10, 10, 0)'); // Fades to transparent
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
