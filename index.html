@@ -35,7 +35,7 @@
             width: 100%;
             height: 100%;
             z-index: 0; /* Ensures it's behind content */
-            opacity: 0.15; /* Make it subtle - NOTE: TEMPORARILY VISIBLE IN JS FOR DEBUGGING */
+            opacity: 0.15; /* Make it subtle */
             pointer-events: none; /* Allows clicks through to elements below */
         }
 
@@ -171,7 +171,13 @@
             <div class="services-grid w-full mx-auto"> 
                 
                 <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/ai.png" alt="AI & Advanced Analytics" loading="lazy" class="w-full h-48 object-cover rounded-t-xl">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 w-full h-48 rounded-t-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                            <path d="M12 12v9"></path>
+                            <path d="m8 17 4 4 4-4"></path>
+                        </svg>
+                    </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-white mb-2">AI & Advanced Analytics</h3>
                         <p class="text-slate-400 text-sm">Unlocking insights and building intelligent systems through machine learning, geospatial analysis, and strategic AI consulting.</p>
@@ -180,7 +186,13 @@
                 </div>
 
                 <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/software.png" alt="Software & Digital Platforms" loading="lazy" class="w-full h-48 object-cover rounded-t-xl">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 w-full h-48 rounded-t-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-white mb-2">Software & Digital Platforms</h3>
                         <p class="text-slate-400 text-sm">Crafting robust, scalable web and mobile applications, including bespoke AI-powered software tailored to your needs.</p>
@@ -189,7 +201,13 @@
                 </div>
 
                 <div class="service-card w-full max-w-sm rounded-xl shadow-lg overflow-hidden service-card-border-glow">
-                    <img src="images/ict.png" alt="ICT Infrastructure & Strategic Consulting" loading="lazy" class="w-full h-48 object-cover rounded-t-xl">
+                    <div class="bg-gradient-to-r from-pink-500 to-blue-500 w-full h-48 rounded-t-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-white mb-2">ICT Infrastructure & Strategic Consulting</h3>
                         <p class="text-slate-400 text-sm">Providing reliable IT infrastructure, hardware solutions, and expert advisory services to optimize your technology landscape.</p>
@@ -237,9 +255,8 @@
     </footer>
 
     <script>
-        // --- EXISTING: Scroll Observation (STILL INSIDE DOMContentLoaded) ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Observer for general fade-in-up sections (Mission, Footer)
+            // --- Scroll Observation ---
             const generalObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -253,7 +270,7 @@
                 generalObserver.observe(element);
             });
 
-            // Observer for service cards (fade-in)
+            // Observer for service cards
             const serviceCards = document.querySelectorAll('.service-card');
             const serviceCardObserverOptions = {
                 root: null,
@@ -265,158 +282,169 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('service-card-visible');
-                    } else {
-                        // Optional: Reset for re-animation if scrolled out of view
-                        // entry.target.classList.remove('service-card-visible'); // Removed for simpler fade-in
                     }
                 });
             };
 
             const serviceCardObserver = new IntersectionObserver(serviceCardObserverCallback, serviceCardObserverOptions);
-
             serviceCards.forEach(card => {
                 serviceCardObserver.observe(card);
             });
 
-            // Handle initial state on page load for service cards (if already in view)
-            serviceCards.forEach(card => {
-                if (card.getBoundingClientRect().top < window.innerHeight) {
-                    card.classList.add('service-card-visible');
+            // --- Canvas Particle Animation for Hero Section ---
+            const canvas = document.getElementById('heroCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationFrameId;
+            
+            // Mouse object for interaction
+            const mouse = {
+                x: undefined,
+                y: undefined,
+                radius: 100 // Radius around mouse cursor for interaction
+            };
+
+            // Set canvas dimensions
+            function setCanvasDimensions() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+
+            // Particle constructor
+            function Particle(x, y, radius, color, velocityX, velocityY) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocityX = velocityX;
+                this.velocityY = velocityY;
+                this.alpha = 0.8; // Default opacity
+            }
+
+            // Draw method for a particle
+            Particle.prototype.draw = function() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.restore();
+            };
+
+            // Update method for a particle
+            Particle.prototype.update = function() {
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+
+                // Wrap particles around the screen
+                if (this.x - this.radius < 0) this.x = canvas.width + this.radius;
+                if (this.x + this.radius > canvas.width) this.x = -this.radius;
+                if (this.y - this.radius < 0) this.y = canvas.height + this.radius;
+                if (this.y + this.radius > canvas.height) this.y = -this.radius;
+
+                // Mouse interaction
+                if (mouse.x !== undefined && mouse.y !== undefined) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const maxDistance = mouse.radius;
+
+                    if (distance < maxDistance) {
+                        const angle = Math.atan2(dy, dx);
+                        const force = (maxDistance - distance) / maxDistance;
+                        this.velocityX -= Math.cos(angle) * force * 0.1;
+                        this.velocityY -= Math.sin(angle) * force * 0.1;
+                        
+                        // Create a connection line when particles are close to mouse
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(59, 130, 246, ${0.2 * (1 - distance/100)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(this.x, this.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.stroke();
+                        }
+                    }
                 }
-            });
-        }); // <--- THIS IS THE CLOSING BRACKET AND PARENTHESIS FOR DOMContentLoaded
+                
+                // Gradually slow down particles
+                this.velocityX *= 0.99;
+                this.velocityY *= 0.99;
+                
+                this.draw();
+            };
 
-
-        // --- NEW: Canvas Particle Animation for Hero Section (MOVED OUTSIDE DOMContentLoaded) ---
-        const canvas = document.getElementById('heroCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationFrameId;
-
-        // Mouse object for interaction
-        const mouse = {
-            x: undefined,
-            y: undefined,
-            radius: 70 // Radius around mouse cursor for interaction
-        };
-
-        // Set canvas dimensions
-        function setCanvasDimensions() {
-            canvas.width = canvas.offsetWidth; // Use offsetWidth/Height for actual rendered size
-            canvas.height = canvas.offsetHeight;
-        }
-
-        // Particle constructor
-        function Particle(x, y, radius, color, velocityX, velocityY) {
-            this.x = x;
-            this.y = y;
-            this.radius = radius;
-            this.color = color;
-            this.velocityX = velocityX;
-            this.velocityY = velocityY;
-        }
-
-        // Draw method for a particle
-        Particle.prototype.draw = function() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        };
-
-        // Update method for a particle (movement and interaction)
-        Particle.prototype.update = function() {
-            this.x += this.velocityX;
-            this.y += this.velocityY;
-
-            // Wrap particles around the screen (teleport to other side)
-            if (this.x - this.radius < 0) this.x = canvas.width + this.radius;
-            if (this.x + this.radius > canvas.width) this.x = -this.radius;
-            if (this.y - this.radius < 0) this.y = canvas.height + this.radius;
-            if (this.y + this.radius > canvas.height) this.y = -this.radius;
-
-            // Mouse interaction: particles subtly repel from the mouse
-            if (mouse.x !== undefined && mouse.y !== undefined) {
-                const dx = mouse.x - this.x;
-                const dy = mouse.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < mouse.radius + this.radius) {
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const force = (mouse.radius + this.radius - distance) / (mouse.radius + this.radius);
-                    const maxForce = 0.5; // Controls how strong the push is
-
-                    this.x -= forceDirectionX * force * maxForce;
-                    this.y -= forceDirectionY * force * maxForce;
+            // Initialize particles
+            function initParticles() {
+                particles = [];
+                const numParticles = 50;
+                const colors = [
+                    'rgba(59, 130, 246, 0.8)', // blue
+                    'rgba(139, 92, 246, 0.8)', // purple
+                    'rgba(236, 72, 153, 0.8)'  // pink
+                ];
+                
+                for (let i = 0; i < numParticles; i++) {
+                    const radius = Math.random() * 3 + 1;
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const velocityX = (Math.random() - 0.5) * 1.5;
+                    const velocityY = (Math.random() - 0.5) * 1.5;
+                    
+                    particles.push(new Particle(x, y, radius, color, velocityX, velocityY));
                 }
             }
-            this.draw();
-        };
 
-        // Initialize particles (TEMPORARILY BRIGHT AND LARGE FOR DEBUGGING)
-        function initParticles() {
-            particles = [];
-            const numParticles = 20; // Fewer particles but larger
-            for (let i = 0; i < numParticles; i++) {
-                const radius = Math.random() * 5 + 5; // Larger radius (5 to 10 pixels)
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const color = `rgba(255, 0, 0, 1)`; // Bright, opaque red color for testing visibility
-                const velocityX = (Math.random() - 0.5) * 1; // Faster movement
-                const velocityY = (Math.random() - 0.5) * 1;
-                particles.push(new Particle(x, y, radius, color, velocityX, velocityY));
+            // Animation loop for particles
+            function animateParticles() {
+                animationFrameId = requestAnimationFrame(animateParticles);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw a subtle background gradient
+                const gradient = ctx.createRadialGradient(
+                    canvas.width / 2, canvas.height / 2, 0,
+                    canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
+                );
+                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.05)');
+                gradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Update and draw each particle
+                particles.forEach(particle => {
+                    particle.update();
+                });
             }
-        }
 
-        // Animation loop for particles
-        function animateParticles() {
-            animationFrameId = requestAnimationFrame(animateParticles);
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
-
-            // Optional: Draw a subtle background gradient for a "nebula/galaxy" feel
-            const gradient = ctx.createRadialGradient(
-                canvas.width / 2, canvas.height / 2, 0,
-                canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
-            );
-            // More visible blue and purple pulse for debugging
-            gradient.addColorStop(0, `rgba(37, 99, 235, ${Math.sin(Date.now() * 0.0001) * 0.1 + 0.2})`); 
-            gradient.addColorStop(0.5, `rgba(147, 51, 234, ${Math.sin(Date.now() * 0.0001 + Math.PI) * 0.1 + 0.15})`);
-            gradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Update and draw each particle
-            particles.forEach(particle => {
-                particle.update();
+            // Event listeners for mouse interaction
+            window.addEventListener('mousemove', (event) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = event.clientX - rect.left;
+                mouse.y = event.clientY - rect.top;
             });
-        }
 
-        // Event listeners for mouse interaction (ADJUSTED FOR CANVAS-RELATIVE COORDINATES)
-        window.addEventListener('mousemove', (event) => {
-            const rect = canvas.getBoundingClientRect(); // Get the size and position of the canvas
-            mouse.x = event.clientX - rect.left;         // Adjust clientX to be relative to canvas left edge
-            mouse.y = event.clientY - rect.top;          // Adjust clientY to be relative to canvas top edge
-        });
+            // Reset mouse position when it leaves the canvas
+            window.addEventListener('mouseout', () => {
+                mouse.x = undefined;
+                mouse.y = undefined;
+            });
 
-        // Reset mouse position when it leaves the canvas (to stop interaction)
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
+            // Handle resizing of the window
+            window.addEventListener('resize', () => {
+                setCanvasDimensions();
+                initParticles();
+            });
 
-        // Handle resizing of the window
-        window.addEventListener('resize', () => {
+            // Initial setup calls
             setCanvasDimensions();
-            initParticles(); // Re-initialize particles for new dimensions
+            initParticles();
+            animateParticles();
         });
-
-        // Initial setup calls (these will now run immediately after the DOM is parsed,
-        // since the script is at the end of <body> and outside DOMContentLoaded)
-        setCanvasDimensions(); // Set initial canvas size
-        initParticles();      // Create initial particles
-        animateParticles();   // Start the animation loop
-
     </script>
 </body>
 </html>
